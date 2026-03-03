@@ -18,7 +18,8 @@ void Receiver::Node::run()
 
 void Receiver::Node::onDataReceived(const Socket::IPFrame & frame)
 {
-  UNIMPLEMENTED(__PRETTY_FUNCTION__);
+  Utils::Message::deserialize(frame, data);
 
-  RCLCPP_INFO(logger, "\n\tstamp: %ld", data.timestamp);
+  RCLCPP_INFO(logger, "Sending data to host: '%s:%d'", frame.address.c_str(), frame.port);
+  RCLCPP_INFO(logger, "\n\tstamp: %ld\tx %f\t y %f\tz %f\t", data.timestamp, data.x, data.y, data.z);
 }

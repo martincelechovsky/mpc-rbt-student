@@ -12,7 +12,9 @@ void Sender::Node::run()
 
 void Sender::Node::onDataTimerTick()
 {
-  UNIMPLEMENTED(__PRETTY_FUNCTION__);
+  data.x += 1.2;
+  data.y -= 0.9;
+  data.z += 0.6;
 
   data.timestamp =
     static_cast<uint64_t>(std::chrono::system_clock::now().time_since_epoch().count());
@@ -21,7 +23,14 @@ void Sender::Node::onDataTimerTick()
     .port = config.remotePort,
     .address = config.remoteAddress,
   };
+  
+  Utils::Message::serialize(frame, data);
+  
+  if(!send(frame)){
+  	RCLCPP_INFO(logger, "Failed to send data to network!");
+  }
+  
   RCLCPP_INFO(logger, "Sending data to host: '%s:%d'", frame.address.c_str(), frame.port);
 
-  RCLCPP_INFO(logger, "\n\tstamp: %ld", data.timestamp);
+    RCLCPP_INFO(logger, "\n\tstamp: %ld\tx %f\t y %f\tz %f\t", data.timestamp, data.x, data.y, data.z);
 }
